@@ -2,6 +2,7 @@
 
 <!--REQUIRE Live Server EXTENSION IN VSCODE-->
 <!--To run, right click, Open with Live Server-->
+<!--Can also now be served on the Flask server-->
 
 <html lang="en">
     <head>
@@ -10,8 +11,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="author" content="Senior-Design">
 
-        <link rel="stylesheet" href="/leaflet/leaflet.css" />
-        <script src="/leaflet/leaflet.js"></script>
+        <link rel="stylesheet" href="{{ url_for('static', filename='leaflet.css') }}" />
+        <script src="{{ url_for('static', filename='leaflet.js') }}"></script>
 
         <style>
             #map {
