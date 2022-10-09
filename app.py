@@ -20,7 +20,14 @@ def test():
 
 @app.route('/leaflet')
 def serve_leaflet():
-   return render_template('leaflet_testing.html')
+   markers = [
+      {
+         'lat':40.745152,
+         'lon':-74.024345,
+         'popup':'Quack'
+      }
+   ]
+   return render_template('index.html', markers=markers)
 
 if __name__ == '__main__':
    app.run(host='localhost', port='3000', debug=True)
