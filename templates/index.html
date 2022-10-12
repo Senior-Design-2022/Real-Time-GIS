@@ -11,8 +11,9 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="author" content="Senior-Design">
 
-        <link rel="stylesheet" href="{{ url_for('static', filename='leaflet.css') }}" />
-        <script src="{{ url_for('static', filename='leaflet.js') }}"></script>
+        
+        <link rel="stylesheet" href="{{ url_for('static', filename='leaflet/leaflet.css') }}" />
+        <script src="{{ url_for('static', filename='leaflet/leaflet.js') }}"></script>
 
         <style>
             #map {
@@ -26,21 +27,7 @@
         <h1>Leaflet</h1>
         <div id="map"></div>
 
-        <script>
-            var map = L.map('map').setView([40.745152, -74.024345], 13);
-
-            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                maxZoom: 19,
-                attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-            }).addTo(map);
-        </script>
-        <script>
-            {% for marker in markers %}
-                L.marker([{{ marker['lat'] }}, {{ marker['lon'] }}]).addTo(map)
-                .bindPopup("{{ marker['popup'] }}")
-                .openPopup();
-            {% endfor %}
-        </script>
+        <script src="{{url_for('static', filename='script.js')}}"></script>
     </body>
 
 </html>
