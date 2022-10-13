@@ -11,7 +11,20 @@ app = Flask(__name__)
 
 @app.route('/')
 def serve_leaflet():
-   return render_template('index.html')
+   markers=[
+   {
+   'lat':0,
+   'lon':0,
+   'popup':'This is the middle of the map.'
+    },
+    {
+      'lat':30,
+      'lon':0,
+      'popup':'This new point.'
+    }
+   ]
+   return render_template('index.html',markers=markers )
+   # return render_template('index.html')
 
 @app.route('/test')
 def test():
