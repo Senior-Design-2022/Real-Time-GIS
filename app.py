@@ -41,7 +41,7 @@ def before_first_request():
 def update_load():
     with app.app_context():
         while True:
-            # time.sleep(1)
+            time.sleep(3)
             turbo.push(turbo.replace(render_template('loadavg.html'), 'load'))
 
 
