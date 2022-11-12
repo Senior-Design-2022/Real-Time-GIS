@@ -5,11 +5,11 @@ import socket
 class CoTServer:
 
     # initiate a server with given ip and port
-    def __init__(self, ip, port, data_list) -> None:
+    def __init__(self, ip, port, data_holder) -> None:
         # init port and ip
         self.ip = ip
         self.port = port
-        self.data = data_list
+        self.data = data_holder # passthrough variable from flask
 
     def create_server(self):
         host_ip = self.ip
@@ -50,9 +50,28 @@ class CoTServer:
                 data = client.recv(1024)
                 if not data:
                     break
-                print(data.decode("utf-8")) # this line will be changed
+
+                data_parsed = data.decode("utf-8") # parse data into string format
+                data_parsed = data_parsed.replace('(', '').replace(')', '').replace(' ', '') # remove the parenthesis and spaces from the formatted string
+                data_lst = data_parsed.split(',') # split by comma isolating each data field
+                # index ||  field
+                #   0   ||  timestamp
+                #   1   ||  id
+                #   2   ||  latitude
+                #   3   ||  longitude 
+                #   4   ||  altitude
+
+                # assign to CoT passthrough with proper elements cast to their proper types
+                
+                self.data.time = data_lst[0]
+                self.data.id = data_lst[1]
+                self.data.lat = float(data_lst[2])
+                self.data.lon = float(data_lst[3])
+                self.data.alt = float(data_lst[4])
+
+                
+                print(self.data) # this line will be changed
                                             # this is currently a string -- will need to convert to a tuple
-                self.data.append(data.decode("utf-8"))
                 
 
 

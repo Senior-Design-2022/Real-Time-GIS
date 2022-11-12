@@ -8,18 +8,35 @@
 from flask import Flask, render_template
 from CoT_Stream_Simulator.server import CoTServer
 from threading import Thread
-from turbo_flask import Turbo
 from flask_sock import Sock
 import time
+import json
 import signal
 
+# class to hold CoT data from the CoT server
+class CoT:
+   def __init__(self) -> None:
+      self.time = ''
+      self.id = ''
+      self.lat = float()
+      self.lon = float()
+      self.alt = float()
+
+   # convert to JSON to send over socket
+   def toJSON(self):
+      return json.dumps(self, default=lambda o: o.__dict__, sort_keys=True, indent=4)
+
+   # for printing
+   def __str__(self) -> str:
+      return self.time + ',' + self.id + ',' + str(self.lat) + ',' + str(self.lon) + ',' + str(self.alt)
+
 app = Flask(__name__)
-turbo = Turbo(app)
 sock = Sock(app)
 
-test_list = list()
+test_data_recieved = CoT() # data passthrough from CoTServer
 
-server = CoTServer('127.0.0.1', 1870, test_list)
+# CoT Server thread initialization
+server = CoTServer('127.0.0.1', 1870, test_data_recieved)
 cot_ingest_thread = Thread(target=server.create_server)
 
 
@@ -29,7 +46,7 @@ def serve_leaflet():
 
 @app.route('/test')
 def test():
-   print(test_list)
+   print(test_data_recieved)
    return "Test page"
 
 
@@ -37,8 +54,7 @@ def test():
 def feed(sock):
    while True:
       time.sleep(1)
-      for data in test_list:
-         sock.send(data)
+      sock.send(test_data_recieved.toJSON())
       
 
 if __name__ == '__main__':
