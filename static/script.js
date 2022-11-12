@@ -1,3 +1,9 @@
+const socket = new WebSocket('ws://' + location.host + '/feed');
+socket.addEventListener('message', e => {
+    console.log(e.data);
+});
+
+
 var map = L.map('map').setView([40.745152, -74.024345], 13);
 
 L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {

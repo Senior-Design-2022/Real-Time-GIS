@@ -9,11 +9,13 @@ from flask import Flask, render_template
 from CoT_Stream_Simulator.server import CoTServer
 from threading import Thread
 from turbo_flask import Turbo
+from flask_sock import Sock
 import time
 import signal
 
 app = Flask(__name__)
 turbo = Turbo(app)
+sock = Sock(app)
 
 test_list = list()
 
@@ -30,23 +32,14 @@ def test():
    print(test_list)
    return "Test page"
 
-def update_path():
-   
-   with app.app_context():
-      while True:
-         path = []
-         time.sleep(1)
-         for data in test_list:
-            row = data.split(',')
-            lat = float(row[2])
-            lon = float(row[3])
-            path.append([lat,lon])
-         #print(path)
-         turbo.push(turbo.replace(render_template('demo_path.html', path_data=path), 'demo_path'))
 
-@app.before_request
-def before_first_request():
-   Thread(target=update_path).start()
+@sock.route('/feed')
+def feed(sock):
+   while True:
+      time.sleep(1)
+      for data in test_list:
+         sock.send(data)
+      
 
 if __name__ == '__main__':
    cot_ingest_thread.daemon = True
