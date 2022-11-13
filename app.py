@@ -11,6 +11,7 @@ from threading import Thread
 from flask_sock import Sock
 import time
 import json
+import copy
 
 # class to hold CoT data from the CoT server
 class CoT:
@@ -28,6 +29,13 @@ class CoT:
    # for printing
    def __str__(self) -> str:
       return self.time + ',' + self.id + ',' + str(self.lat) + ',' + str(self.lon) + ',' + str(self.alt)
+
+   # to check equality
+   def __eq__(self, other):
+      if isinstance(other, self.__class__):
+         return self.__dict__ == other.__dict__
+      else:
+         return False
 
 app = Flask(__name__)
 sock = Sock(app)
@@ -52,10 +60,15 @@ def test():
 # init web socket
 @sock.route('/feed')
 def feed(sock):
+   previous = CoT()
    while True:
       # send data to socket once every second
       time.sleep(1)
+      # ensures same data point isn't sent repeatedly
+      if stream_data == previous:
+         continue
       sock.send(stream_data.toJSON())
+      previous = copy.copy(stream_data)
       
 
 if __name__ == '__main__':
