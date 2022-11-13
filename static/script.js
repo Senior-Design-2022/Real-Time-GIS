@@ -22,7 +22,8 @@ socket.addEventListener('message', e => {
     }
 });
 
-L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 19,
-    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+L.tileLayer('/static/tiles/{z}/{x}/{y}.jpg', {
+    maxZoom: 18,
+    minZoom: 12,
+    attribution: '&copy;'
     }).addTo(map);
