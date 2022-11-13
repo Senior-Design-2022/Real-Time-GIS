@@ -11,7 +11,6 @@ from threading import Thread
 from flask_sock import Sock
 import time
 import json
-import signal
 
 # class to hold CoT data from the CoT server
 class CoT:
@@ -33,28 +32,30 @@ class CoT:
 app = Flask(__name__)
 sock = Sock(app)
 
-test_data_recieved = CoT() # data passthrough from CoTServer
+stream_data = CoT() # data passthrough from CoTServer
 
 # CoT Server thread initialization
-server = CoTServer('127.0.0.1', 1870, test_data_recieved)
+server = CoTServer('127.0.0.1', 1870, stream_data)
 cot_ingest_thread = Thread(target=server.create_server)
 
-
+# render home page
 @app.route('/')
 def serve_leaflet():
    return render_template('index.html')
 
+# route for testing
 @app.route('/test')
 def test():
-   print(test_data_recieved)
+   print(stream_data)
    return "Test page"
 
-
+# init web socket
 @sock.route('/feed')
 def feed(sock):
    while True:
+      # send data to socket once every second
       time.sleep(1)
-      sock.send(test_data_recieved.toJSON())
+      sock.send(stream_data.toJSON())
       
 
 if __name__ == '__main__':
