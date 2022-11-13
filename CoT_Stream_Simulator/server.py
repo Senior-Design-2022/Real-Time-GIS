@@ -48,6 +48,10 @@ class CoTServer:
         with client:
             while True:
                 data = client.recv(1024)
+                
+                #
+                #   THIS NEEDS TO BE HANDLED DIFFERENTLY. NEED TO GRACEFULLY CLOSE THE CONNECTION AND ALLOW FOR OTHER CONNECTIONS
+                #
                 if not data:
                     break
 
@@ -71,11 +75,3 @@ class CoTServer:
 
                 
                 print(self.data) # this line will be changed
-                                            # this is currently a string -- will need to convert to a tuple
-                
-
-
-# if __name__ == "__main__":
-#     host_ip = "127.0.0.1"
-#     host_port = 1870
-#     create_server(host_ip, host_port)

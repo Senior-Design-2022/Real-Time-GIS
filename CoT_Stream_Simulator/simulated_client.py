@@ -84,6 +84,15 @@ if __name__ == "__main__":
     table_name = "ToCoTData"
     src = "20220901ADSB.sq3"
     target_num = "11279804.N88ZA" # change this to 'all' to recieve all data from the table
+    # Some sample targets for testing:
+    # 11279804.N88ZA -- what we've been using the most
+    # 10531224.N144AM
+    # 10797116.N405LP
+    # 11329446.N929AN
+    # 11133841.N736YX
+    # 11124112.N727AC
+    # 11123333.N726H
+
     data = get_CoT_from_db(table_name, src, target_num)
 
     # simulate CoT stream
