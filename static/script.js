@@ -16,6 +16,7 @@ function generate_random_color() {
 
 //init socket
 const socket = new WebSocket('ws://' + location.host + '/feed');
+var lastMarker = null
 //listen for a message from the server
 socket.addEventListener('message', e => {
     console.log(e.data);
@@ -23,13 +24,21 @@ socket.addEventListener('message', e => {
     if(cot.id !== '') {
 
         if (targets.has(cot.id)) { //if this target is already in the map
+            const lastCoT = targets.get(cot.id)._latlngs.slice(-1)[0]
+
             //append data to path
             targets.get(cot.id).addLatLng([cot.lat, cot.lon]); //add point
-            
+
             if (showMarkers) {
-                L.marker([cot.lat, cot.lon]).addTo(map)
-                    .bindPopup(cot.id)
-                    .openPopup();
+
+                if (lastMarker != null){ // remove previous markers
+                    map.removeLayer(lastMarker)
+                }
+
+                lastMarker = new L.Marker([cot.lat, cot.lon])
+                map.addLayer(lastMarker)
+                lastMarker.bindPopup(cot.id).openPopup()
+
             }
 
         } else { //if the target is not in the map yet
@@ -39,9 +48,9 @@ socket.addEventListener('message', e => {
             targets.get(cot.id).addLatLng([cot.lat, cot.lon]); //add point
             
             if (showMarkers) {
-                L.marker([cot.lat, cot.lon]).addTo(map)
-                    .bindPopup(cot.id)
-                    .openPopup();
+                lastMarker = new L.Marker([cot.lat, cot.lon])
+                map.addLayer(lastMarker)
+                lastMarker.bindPopup(cot.id).openPopup()
             }
         }
     }
