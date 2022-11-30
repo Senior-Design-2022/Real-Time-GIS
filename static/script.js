@@ -3,6 +3,7 @@ var map = L.map('map').setView([40.745152, -74.024345], 13);
 
 //create map for tracking multiple targets
 const targets = new Map();
+const lastMarker = new Map();
 
 const showMarkers = true; //just in case they get overwhelming, can stop markers from being added
 
@@ -23,13 +24,21 @@ socket.addEventListener('message', e => {
     if(cot.id !== '') {
 
         if (targets.has(cot.id)) { //if this target is already in the map
+            const lastCoT = targets.get(cot.id)._latlngs.slice(-1)[0]
+
             //append data to path
             targets.get(cot.id).addLatLng([cot.lat, cot.lon]); //add point
-            
+
             if (showMarkers) {
-                L.marker([cot.lat, cot.lon]).addTo(map)
-                    .bindPopup(cot.id)
-                    .openPopup();
+
+                map.removeLayer(lastMarker.get(cot.id)) //removes latest marker
+
+                marker = new L.Marker([cot.lat, cot.lon])
+                map.addLayer(marker)
+                marker.bindPopup(cot.id).openPopup()
+
+                lastMarker.set(cot.id, marker)
+
             }
 
         } else { //if the target is not in the map yet
@@ -39,9 +48,10 @@ socket.addEventListener('message', e => {
             targets.get(cot.id).addLatLng([cot.lat, cot.lon]); //add point
             
             if (showMarkers) {
-                L.marker([cot.lat, cot.lon]).addTo(map)
-                    .bindPopup(cot.id)
-                    .openPopup();
+                marker = new L.Marker([cot.lat, cot.lon])
+                map.addLayer(marker)
+                marker.bindPopup(cot.id).openPopup()
+                lastMarker.set(cot.id, marker)
             }
         }
     }
