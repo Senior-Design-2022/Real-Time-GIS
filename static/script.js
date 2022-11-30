@@ -3,6 +3,7 @@ var map = L.map('map').setView([40.745152, -74.024345], 13);
 
 //create map for tracking multiple targets
 const targets = new Map();
+const lastMarker = new Map();
 
 const showMarkers = true; //just in case they get overwhelming, can stop markers from being added
 
@@ -16,7 +17,6 @@ function generate_random_color() {
 
 //init socket
 const socket = new WebSocket('ws://' + location.host + '/feed');
-var lastMarker = null
 //listen for a message from the server
 socket.addEventListener('message', e => {
     console.log(e.data);
@@ -31,13 +31,13 @@ socket.addEventListener('message', e => {
 
             if (showMarkers) {
 
-                if (lastMarker != null){ // remove previous markers
-                    map.removeLayer(lastMarker)
-                }
+                map.removeLayer(lastMarker.get(cot.id)) //removes latest marker
 
-                lastMarker = new L.Marker([cot.lat, cot.lon])
-                map.addLayer(lastMarker)
-                lastMarker.bindPopup(cot.id).openPopup()
+                marker = new L.Marker([cot.lat, cot.lon])
+                map.addLayer(marker)
+                marker.bindPopup(cot.id).openPopup()
+
+                lastMarker.set(cot.id, marker)
 
             }
 
@@ -48,9 +48,10 @@ socket.addEventListener('message', e => {
             targets.get(cot.id).addLatLng([cot.lat, cot.lon]); //add point
             
             if (showMarkers) {
-                lastMarker = new L.Marker([cot.lat, cot.lon])
-                map.addLayer(lastMarker)
-                lastMarker.bindPopup(cot.id).openPopup()
+                marker = new L.Marker([cot.lat, cot.lon])
+                map.addLayer(marker)
+                marker.bindPopup(cot.id).openPopup()
+                lastMarker.set(cot.id, marker)
             }
         }
     }
