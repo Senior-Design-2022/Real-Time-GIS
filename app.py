@@ -63,7 +63,7 @@ def feed(sock):
    previous = CoT()
    while True:
       # send data to socket once every second
-      time.sleep(1)
+      #time.sleep(1)
       # ensures same data point isn't sent repeatedly
       if stream_data == previous:
          continue
