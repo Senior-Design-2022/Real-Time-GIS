@@ -1,8 +1,10 @@
 //create map
 var map = L.map('map').setView([40.745152, -74.024345], 13);
+var layerControl = L.control.layers().addTo(map); // add the layer control to the map for hiding markers
 
 //create map for tracking multiple targets
 const targets = new Map();
+const markerLayers = new Map(); // keeps track of the layers added for each path
 
 const showMarkers = true; //just in case they get overwhelming, can stop markers from being added
 
@@ -24,13 +26,12 @@ socket.addEventListener('message', e => {
 
         if (targets.has(cot.id)) { //if this target is already in the map
             //append data to path
-            targets.get(cot.id).addLatLng([cot.lat, cot.lon]); //add point
-            
-            if (showMarkers) {
-                L.marker([cot.lat, cot.lon]).addTo(map)
-                    .bindPopup(cot.id)
-                    .openPopup();
-            }
+            targets.get(cot.id).addLatLng([cot.lat, cot.lon]); //add point to path
+            var marker = L.circleMarker([cot.lat, cot.lon], {radius: 3, fill: true, fillOpacity: 1.0}).bindPopup(cot.id); // create marker for that point
+
+            // get the layer group for the markers of this path
+            var layerGroup = markerLayers.get(cot.id);
+            layerGroup.addLayer(marker); // add the new marker to the layer group
 
         } else { //if the target is not in the map yet
             //create path and append data to new path
@@ -38,11 +39,12 @@ socket.addEventListener('message', e => {
             targets.set(cot.id, L.polyline([], {color: generate_random_color()}).addTo(map)); //create line
             targets.get(cot.id).addLatLng([cot.lat, cot.lon]); //add point
             
-            if (showMarkers) {
-                L.marker([cot.lat, cot.lon]).addTo(map)
-                    .bindPopup(cot.id)
-                    .openPopup();
-            }
+            // create new marker and layer group
+            var marker = L.circleMarker([cot.lat, cot.lon], {radius: 3, fill: true, fillOpacity: 1.0}).addTo(map).bindPopup(cot.id); // create marker for the point
+            var newMarkerLayer = L.layerGroup().addLayer(marker).addTo(map); // create layer group for markers on this line
+            markerLayers.set(cot.id, newMarkerLayer); // add the new layer group to our map
+
+            layerControl.addOverlay(newMarkerLayer, cot.id); // add the layer to the layer control as an overlay layer
         }
     }
 });

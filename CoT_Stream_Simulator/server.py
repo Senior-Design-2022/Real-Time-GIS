@@ -79,40 +79,8 @@ class CoTServer:
         s.listen(allowed_connections)
         print(f"socket now listening")
 
+        # Accept connections in an infinite while loop to accept multiple connections.
+        # Start a new thread which performs the data retrival for each input stream
         while True:
-            client, addr = s.accept() #accept incoming connections
-            thread.start_new_thread(self.on_new_client,(client,addr))
-
-        #
-        # CURRENTLY WILL CLOSE SOCKET AFTER ONE DATA STREAM -- WILL CHANGE TO ALLOW MULTIPLE STREAMS
-        #
-        with client:
-            while True:
-                data = client.recv(1024)
-                
-                #
-                #   THIS NEEDS TO BE HANDLED DIFFERENTLY. NEED TO GRACEFULLY CLOSE THE CONNECTION AND ALLOW FOR OTHER CONNECTIONS
-                #
-                if not data:
-                    break
-
-                data_parsed = data.decode("utf-8") # parse data into string format
-                data_parsed = data_parsed.replace('(', '').replace(')', '').replace(' ', '') # remove the parenthesis and spaces from the formatted string
-                data_lst = data_parsed.split(',') # split by comma isolating each data field
-                # index ||  field
-                #   0   ||  timestamp
-                #   1   ||  id
-                #   2   ||  latitude
-                #   3   ||  longitude 
-                #   4   ||  altitude
-
-                # assign to CoT passthrough with proper elements cast to their proper types
-                
-                self.data.time = data_lst[0]
-                self.data.id = data_lst[1]
-                self.data.lat = float(data_lst[2])
-                self.data.lon = float(data_lst[3])
-                self.data.alt = float(data_lst[4])
-
-                
-                print(self.data) # this line will be changed
+            client, addr = s.accept() #accept latest incoming connection
+            thread.start_new_thread(self.on_new_client,(client,addr)) # start new thread with new connection
