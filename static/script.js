@@ -16,6 +16,12 @@ function generate_random_color() {
     return `rgb(${r},${g},${b})`;
 }
 
+// popup data table on marker click
+function clickMarker(e){
+    console.log(this)
+    alert(this.getLatLng())
+}
+
 //init socket
 const socket = new WebSocket('ws://' + location.host + '/feed');
 //listen for a message from the server
@@ -27,7 +33,7 @@ socket.addEventListener('message', e => {
         if (targets.has(cot.id)) { //if this target is already in the map
             //append data to path
             targets.get(cot.id).addLatLng([cot.lat, cot.lon]); //add point to path
-            var marker = L.circleMarker([cot.lat, cot.lon], {radius: 3, fill: true, fillOpacity: 1.0}).bindPopup(cot.id); // create marker for that point
+            var marker = L.circleMarker([cot.lat, cot.lon], {radius: 3, fill: true, fillOpacity: 1.0}).bindPopup(cot.id).on('click', clickMarker); // create marker for that point
 
             // get the layer group for the markers of this path
             var layerGroup = markerLayers.get(cot.id);
