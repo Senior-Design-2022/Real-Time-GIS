@@ -1,0 +1,11 @@
+{
+    "col_names" : {
+        "to_send" : {
+            "_id" : "Report_TargetNum",
+            "_lat" : "Target_PositionLatitude",
+            "_lon" : "Target_PositionLongitude",
+            "datetime" : "Measurement_DateTime",
+            "altitude" : "Target_PositionAltitude"
+        }
+    }
+}

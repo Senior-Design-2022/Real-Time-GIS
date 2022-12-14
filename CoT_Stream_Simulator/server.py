@@ -3,6 +3,8 @@
 import socket
 import _thread as thread
 
+import json
+
 class CoTServer:
 
     # initiate a server with given ip and port
@@ -10,7 +12,8 @@ class CoTServer:
         # init port and ip
         self.ip = ip
         self.port = port
-        self.data = data_holder # passthrough variable from flask
+        #self.data = data_holder # passthrough variable from flask
+        self.current_cot = data_holder
 
     # method for each new client so the thread can run the event loop
     def on_new_client(self, client, addr):
@@ -31,6 +34,7 @@ class CoTServer:
                 if not data:
                     break
 
+                '''
                 data_parsed = data.decode("utf-8") # parse data into string format
                 data_parsed = data_parsed.replace('(', '').replace(')', '').replace(' ', '') # remove the parenthesis and spaces from the formatted string
                 data_lst = data_parsed.split(',') # split by comma isolating each data field
@@ -48,9 +52,13 @@ class CoTServer:
                 self.data.lat = float(data_lst[2])
                 self.data.lon = float(data_lst[3])
                 self.data.alt = float(data_lst[4])
-
+                '''
                 
-                print(self.data) # this line will be changed
+                #print(self.data) # this line will be changed
+
+                decoded_json_string = data.decode("utf-8")
+                print(decoded_json_string)
+                self.current_cot.data = json.loads(decoded_json_string) # prob better to compare (with prev, done in app.py) JSON objs rather than strings. prob doesnt matter tho.
 
     def create_server(self):
         host_ip = self.ip
