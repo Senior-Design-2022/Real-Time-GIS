@@ -1,3 +1,5 @@
+import { clickMarker } from './entity_data.js';
+
 //create map
 var map = L.map('map').setView([40.745152, -74.024345], 13);
 var layerControl = L.control.layers().addTo(map); // add the layer control to the map for hiding markers
@@ -16,11 +18,6 @@ function generate_random_color() {
     return `rgb(${r},${g},${b})`;
 }
 
-// popup data table on marker click
-function clickMarker(e){
-    console.log(this)
-    alert(this.getLatLng())
-}
 
 //init socket
 const socket = new WebSocket('ws://' + location.host + '/feed');
@@ -30,11 +27,19 @@ socket.addEventListener('message', e => {
     const cot = JSON.parse(e.data);
     if(cot.id !== '') {
 
+        //Create popup table for markers.
+        var popupContent = '<table>';
+        for (var p in cot){
+            popupContent += '<tr><td>' + p + '</td><td>'+ cot[p] + '</td></tr>';
+        }
+        popupContent += '</table>'
+
+
         if (targets.has(cot.id)) { //if this target is already in the map
             //append data to path
             targets.get(cot.id).addLatLng([cot.lat, cot.lon]); //add point to path
-            var marker = L.circleMarker([cot.lat, cot.lon], {radius: 3, fill: true, fillOpacity: 1.0}).bindPopup(cot.id).on('click', clickMarker); // create marker for that point
-
+            var marker = L.circleMarker([cot.lat, cot.lon], {radius: 3, fill: true, fillOpacity: 1.0}).bindPopup(popupContent).on('click', clickMarker); // create marker for that point
+            marker.CoT_Data = cot
             // get the layer group for the markers of this path
             var layerGroup = markerLayers.get(cot.id);
             layerGroup.addLayer(marker); // add the new marker to the layer group
@@ -46,7 +51,8 @@ socket.addEventListener('message', e => {
             targets.get(cot.id).addLatLng([cot.lat, cot.lon]); //add point
             
             // create new marker and layer group
-            var marker = L.circleMarker([cot.lat, cot.lon], {radius: 3, fill: true, fillOpacity: 1.0}).addTo(map).bindPopup(cot.id); // create marker for the point
+            var marker = L.circleMarker([cot.lat, cot.lon], {radius: 3, fill: true, fillOpacity: 1.0}).addTo(map).bindPopup(popupContent).on('click', clickMarker); // create marker for the point
+            marker.CoT_Data = cot
             var newMarkerLayer = L.layerGroup().addLayer(marker).addTo(map); // create layer group for markers on this line
             markerLayers.set(cot.id, newMarkerLayer); // add the new layer group to our map
 
