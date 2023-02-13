@@ -7,11 +7,15 @@
 
 from flask import Flask, render_template
 from CoT_Stream_Simulator.server import CoTServer
+from SITCoTmsg.SITCoTmsg import CoTUtility, SITQueuedUDPClient
 from threading import Thread
 from flask_sock import Sock
+from pathlib import Path
 import time
 import json
 import copy
+import json
+
 
 # class to hold CoT data from the CoT server
 class CoT:
@@ -58,22 +62,39 @@ def test():
    return "Test page"
 
 # init web socket
+# @sock.route('/feed')
+# def feed(sock):
+#    previous = CoT()
+#    while True:
+#       # send data to socket once every second
+#       #time.sleep(1)
+#       # ensures same data point isn't sent repeatedly
+#       if stream_data == previous:
+#          continue
+#       sock.send(stream_data.toJSON())
+#       previous = copy.copy(stream_data)
+
 @sock.route('/feed')
 def feed(sock):
-   previous = CoT()
-   while True:
-      # send data to socket once every second
-      #time.sleep(1)
-      # ensures same data point isn't sent repeatedly
-      if stream_data == previous:
-         continue
-      sock.send(stream_data.toJSON())
-      previous = copy.copy(stream_data)
+   with open(Path(__file__).parent / "./config/location1/config0.json") as settings:
+      wanted_params = json.load(settings)
+      with SITQueuedUDPClient('127.0.0.1',1870) as scot:
+         while(1):
+               if(scot.available()):
+                  item, good = scot.getitem()
+                  print("Received " + "="*40)
+                  print(item)
+                  print("Decoded " + "="*40)
+
+                  parsed = CoTUtility.parseData(item[1], wanted_params)
+                  print(parsed)
+                  sock.send(json.dumps(parsed))
+                  
       
 
 if __name__ == '__main__':
-   cot_ingest_thread.daemon = True
-   cot_ingest_thread.start()
+   #cot_ingest_thread.daemon = True
+   #cot_ingest_thread.start()
    
    app.run(host='localhost', port='3000', debug=False)
 

@@ -22,29 +22,29 @@ const socket = new WebSocket('ws://' + location.host + '/feed');
 socket.addEventListener('message', e => {
     console.log(e.data);
     const cot = JSON.parse(e.data);
-    if(cot.id !== '') {
+    if(cot.uid !== '') {
 
-        if (targets.has(cot.id)) { //if this target is already in the map
+        if (targets.has(cot.uid)) { //if this target is already in the map
             //append data to path
-            targets.get(cot.id).addLatLng([cot.lat, cot.lon]); //add point to path
-            var marker = L.circleMarker([cot.lat, cot.lon], {radius: 3, fill: true, fillOpacity: 1.0}).bindPopup(cot.id); // create marker for that point
+            targets.get(cot.uid).addLatLng([cot.lat, cot.lon]); //add point to path
+            var marker = L.circleMarker([cot.lat, cot.lon], {radius: 3, fill: true, fillOpacity: 1.0}).bindPopup(cot.uid); // create marker for that point
 
             // get the layer group for the markers of this path
-            var layerGroup = markerLayers.get(cot.id);
+            var layerGroup = markerLayers.get(cot.uid);
             layerGroup.addLayer(marker); // add the new marker to the layer group
 
         } else { //if the target is not in the map yet
             //create path and append data to new path
-            console.log(`New target [${cot.id}] now being tracked.`);
-            targets.set(cot.id, L.polyline([], {color: generate_random_color()}).addTo(map)); //create line
-            targets.get(cot.id).addLatLng([cot.lat, cot.lon]); //add point
+            console.log(`New target [${cot.uid}] now being tracked.`);
+            targets.set(cot.uid, L.polyline([], {color: generate_random_color()}).addTo(map)); //create line
+            targets.get(cot.uid).addLatLng([cot.lat, cot.lon]); //add point
             
             // create new marker and layer group
-            var marker = L.circleMarker([cot.lat, cot.lon], {radius: 3, fill: true, fillOpacity: 1.0}).addTo(map).bindPopup(cot.id); // create marker for the point
+            var marker = L.circleMarker([cot.lat, cot.lon], {radius: 3, fill: true, fillOpacity: 1.0}).addTo(map).bindPopup(cot.uid); // create marker for the point
             var newMarkerLayer = L.layerGroup().addLayer(marker).addTo(map); // create layer group for markers on this line
-            markerLayers.set(cot.id, newMarkerLayer); // add the new layer group to our map
+            markerLayers.set(cot.uid, newMarkerLayer); // add the new layer group to our map
 
-            layerControl.addOverlay(newMarkerLayer, cot.id); // add the layer to the layer control as an overlay layer
+            layerControl.addOverlay(newMarkerLayer, cot.uid); // add the layer to the layer control as an overlay layer
         }
     }
 });
