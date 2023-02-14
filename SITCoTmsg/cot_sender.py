@@ -24,8 +24,6 @@ if __name__ == "__main__":
             cot_data = {"uid":"test.2", "lat": this_lat, "lon":this_lon,"detail": { "track": { "course":0,"speed":0 } } }
             cot_xml = CoTUtility.toCoT(cot_data)
             
-            
-
             out.putitem(cot_xml)
             print(cot_xml)
                 

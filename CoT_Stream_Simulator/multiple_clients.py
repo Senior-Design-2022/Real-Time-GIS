@@ -6,6 +6,9 @@ import sqlite3
 import os.path
 import socket
 import time
+import sys
+from ..SITCoTmsg.SITCoTmsg import SITQueuedUDPSender, SITQueuedUDPClient, CoTUtility
+
 
 class StreamSimulator:
 
@@ -59,6 +62,24 @@ class StreamSimulator:
         #    print(row)
 
         return rows
+
+
+    def create_UDP_sender(self, data, host_ip, host_port):
+
+        with SITQueuedUDPSender(host_ip, default_destination=(host_ip, host_port)) as out:
+            out.Debug= False
+            
+            # will run through each point
+            for data_point in data:
+                time.sleep(0.5)
+
+                # (Measurement_DateTime, Report_TargetNum, Target_PositionLatitude, Target_PositionLongitude, Target_PositionAltitude)
+                cot_data = { "uid": data_point[1], "lat": data_point[2], "lon": data_point[3] }
+                cot_xml = CoTUtility.toCoT(cot_data)
+                #out.putitem(cot_xml)
+                print(cot_xml)
+
+        return
 
 
     # simulates a client sending data to the server

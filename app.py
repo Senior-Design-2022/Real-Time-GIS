@@ -3,7 +3,6 @@
 # running this file will open the development server at http://localhost:3000 in debug mode
 # test routes are:
 # http://localhost:3000
-# http://localhost:3000/test
 
 from flask import Flask, render_template
 from CoT_Stream_Simulator.server import CoTServer
@@ -11,11 +10,7 @@ from SITCoTmsg.SITCoTmsg import CoTUtility, SITQueuedUDPClient
 from threading import Thread
 from flask_sock import Sock
 from pathlib import Path
-import time
 import json
-import copy
-import json
-
 
 # class to hold CoT data from the CoT server
 class CoT:
@@ -61,19 +56,6 @@ def test():
    print(stream_data)
    return "Test page"
 
-# init web socket
-# @sock.route('/feed')
-# def feed(sock):
-#    previous = CoT()
-#    while True:
-#       # send data to socket once every second
-#       #time.sleep(1)
-#       # ensures same data point isn't sent repeatedly
-#       if stream_data == previous:
-#          continue
-#       sock.send(stream_data.toJSON())
-#       previous = copy.copy(stream_data)
-
 @sock.route('/feed')
 def feed(sock):
    with open(Path(__file__).parent / "./config/location1/config0.json") as settings:
@@ -90,12 +72,7 @@ def feed(sock):
                   print(parsed)
                   sock.send(json.dumps(parsed))
                   
-      
-
 if __name__ == '__main__':
-   #cot_ingest_thread.daemon = True
-   #cot_ingest_thread.start()
-   
    app.run(host='localhost', port='3000', debug=False)
 
    
