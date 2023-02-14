@@ -1,6 +1,6 @@
 # Real Time Geoinformation System
 
-Application for tracking targets in real time.
+Application for tracking targets in real time created as a part of Senior Design at Stevens Institute of Technology.
 
 ## Installation
 
@@ -19,5 +19,15 @@ pip install flask_sock
 Run `app.py` to start server.
 Server will be visible on [localhost:3000](localhost:3000).
 
+Once the server is running, the stream simulator or load tester can be used to populate the server with input streams for testing.
+
 ### Simulating input streams
-In the directory `/CoT_Stream_Simulator`, run `simulated_client.py`. Settings for what will be sent can be tweaked within `simulated_client.py`.
+```bash
+python3 stream_simulator.py <number of streams>
+```
+
+### Load Testing
+
+```bash
+python3 load_tester.py <number of streams>
+```
