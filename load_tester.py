@@ -9,7 +9,7 @@ import time
 import sqlite3
 import os.path
 import time
-from SocketUtils.SocketUtils import QueuedUDPSender
+from SocketUtils.SocketUtils import SITQueuedUDPSender
 from CoTUtils.CoTUtility import CoTUtility
 
 class bcolors:
@@ -63,7 +63,7 @@ def get_CoT_from_db(table_name, src, target_id):
 
 def create_UDP_sender(data, host_ip, host_port):
 
-    with QueuedUDPSender(host_ip, default_destination=(host_ip, host_port)) as out:
+    with SITQueuedUDPSender(host_ip, default_destination=(host_ip, host_port)) as out:
         out.Debug= False
 
         if data[0]:

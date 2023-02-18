@@ -8,7 +8,7 @@ import time
 import socket
 import threading
 
-class UDPThreadedClient:
+class SITUDPThreadedClient:
     
     def __init__(self,UDPIP, UDPPORT,enable,queuesize):
         self.setsource(UDPIP, UDPPORT)
@@ -101,7 +101,7 @@ class UDPThreadedClient:
         
         return item1, good
 
-class QueuedUDPSender(UDPThreadedClient):
+class SITQueuedUDPSender(SITUDPThreadedClient):
     """Sender for UDP messages
 
     :param UDPIP: IP address of UDP server
@@ -205,7 +205,7 @@ class QueuedUDPSender(UDPThreadedClient):
             else:
                 time.sleep(.1)                
 
-class QueuedUDPClient(UDPThreadedClient):
+class SITQueuedUDPClient(SITUDPThreadedClient):
     """SIT UDP client with queue
 
     :param UDPIP: IP address of UDP server

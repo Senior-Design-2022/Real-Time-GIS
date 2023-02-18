@@ -10,7 +10,7 @@ import time
 import sqlite3
 import os.path
 import time
-from SocketUtils.SocketUtils import QueuedUDPSender
+from SocketUtils.SocketUtils import SITQueuedUDPSender
 from CoTUtils.CoTUtility import CoTUtility
 
 class bcolors:
@@ -84,7 +84,7 @@ class StreamSimulator:
     def create_UDP_sender(self, data, host_ip, host_port):
         if debug: print("in create_UDP_sender")
 
-        with QueuedUDPSender(host_ip, default_destination=(host_ip, host_port)) as out:
+        with SITQueuedUDPSender(host_ip, default_destination=(host_ip, host_port)) as out:
             out.Debug= False
             
             if debug: print("created a QueuedUDPSender")
