@@ -23,6 +23,36 @@
         <div id="map"></div>
         
         <script src="{{url_for('static', filename='script.js')}}"></script>
+
+        <br/>
+        <h2>Replays</h2>
+
+        <button type="button">Get Available Replays</button>
+        <br/>
+
+        <!--List of replays-->
+        <label for="replay-list">Replay List: </label>
+        <select name="replay-list" id="replay-list">
+            <option value="a">A</option>
+            <option value="b">B</option>
+            <option value="c">C</option>
+        </select>
+
+        <br/><br/>
+
+        <!--Replay speed options-->
+        <label for="playback-speed">Playback Speed: </label>
+        <select name="playback-speed" id="playback-speed">
+            <option value="1">1x</option>
+            <option value="0.5">2x</option>
+            <option value="0.25">4x</option>
+        </select>
+
+        <br/><br/>
+
+        <button type="button">Start Replay</button>
+
+        <br/><br/>
     </body>
     
 
