@@ -4,7 +4,7 @@
 # test routes are:
 # http://localhost:3000
 
-from flask import Flask, render_template
+from flask import Flask, render_template, send_from_directory
 from flask_sock import Sock
 from pathlib import Path
 import json
@@ -27,7 +27,7 @@ class bcolors:
     UNDERLINE = '\033[4m'
 
 # initialize flask application
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static')
 sock = Sock(app)
 
 # initialize logger for saving replays
@@ -38,6 +38,10 @@ logger = SaveReplay(debug=True)
 def serve_leaflet():
    return render_template('index.html')
 
+# lets us properly send png files
+@app.route('/images/<path:path>')
+def send_img(path):
+    return send_from_directory('img', path, mimetype='image/png')
 
 @sock.route('/feed')
 def feed(sock):
