@@ -38,11 +38,6 @@ logger = SaveReplay(debug=True)
 def serve_leaflet():
    return render_template('index.html')
 
-# lets us properly send png files
-@app.route('/images/<path:path>')
-def send_img(path):
-    return send_from_directory('img', path, mimetype='image/png')
-
 @sock.route('/feed')
 def feed(sock):
    with open(Path(__file__).parent / "./config/location1/config0.json") as settings:

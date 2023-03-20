@@ -41,7 +41,7 @@ socket.addEventListener('message', e => {
             targets.get(cot.uid).addLatLng([cot.lat, cot.lon]); //add point to path
             // var marker = L.circleMarker([cot.lat, cot.lon], {radius: 3, fill: true, fillOpacity: 1.0}).bindPopup(cot.uid); // create marker for that point
             var marker = L.marker([cot.lat, cot.lon], {icon: L.icon({
-                iconUrl: `{{ url_for('static', filename='/images/leaf-green.png') }}`,
+                iconUrl: "static/images/leaf-green.png",
                 iconSize: [25, 41],
                 iconAnchor: [12, 41],
                 popupAnchor: [1, -34]
@@ -86,7 +86,7 @@ socket.addEventListener('message', e => {
             // create new marker and layer group
             // var marker = L.circleMarker([cot.lat, cot.lon], {radius: 3, fill: true, fillOpacity: 1.0}).addTo(map).bindPopup(cot.uid); // create marker for the point
             var marker = L.marker([cot.lat, cot.lon], {icon: L.icon({
-                iconUrl: `{{ url_for('static', filename='/images/leaf-green.png') }}`,
+                iconUrl: "static/images/leaf-green.png",
                 iconSize: [25, 41],
                 iconAnchor: [12, 41],
                 popupAnchor: [1, -34]
