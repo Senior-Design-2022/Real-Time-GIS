@@ -28,6 +28,23 @@ var markerArrays = {} // will hold the arrays of each path's markers to manage h
 //     popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
 // });
 
+icons = {
+    'a-f-A-C' : 'static/images/FRD_AIR.svg.png',
+    'a-f-G-C' : 'static/images/FRD_GND.svg.png',
+    'a-f-S-C' : 'static/images/FRD_SEASURFACE.svg.png',
+    'a-f-U-C' : 'static/images/FRD_SUB.svg.png',
+    'a-h-A-C' : 'static/images/HOS_AIR.svg.png',
+    'a-h-G-C' : 'static/images/HOS_GND.svg.png',
+    'a-h-U-C' : 'static/images/HOS_SUB.svg.png',
+    // 'a-h-S-C' : 'static/images/HOS_SEASURFACE.svg.png' dont have hostile sea yet,
+    'a-n-A-C' : 'static/images/NEU_AIR.svg.png',
+    'a-n-G-C' : 'static/images/NEU_GND.svg.png',
+    'a-n-U-C' : 'static/images/NEU.svg.png',
+    'a-u-A-C' : 'static/images/UNK_AIR.svg.png',
+    'a-u-G-C' : 'static/images/UNK_GND.svg.png',
+    'a-u-U-C' : 'static/images/UNK_SUB.svg.png',
+}
+
 //init socket
 const socket = new WebSocket('ws://' + location.host + '/feed');
 //listen for a message from the server
@@ -41,7 +58,7 @@ socket.addEventListener('message', e => {
             targets.get(cot.uid).addLatLng([cot.lat, cot.lon]); //add point to path
             // var marker = L.circleMarker([cot.lat, cot.lon], {radius: 3, fill: true, fillOpacity: 1.0}).bindPopup(cot.uid); // create marker for that point
             var marker = L.marker([cot.lat, cot.lon], {icon: L.icon({
-                iconUrl: "static/images/leaf-green.png",
+                iconUrl: "static/images/leaf-green.png", // icons[cot.type]
                 iconSize: [25, 41],
                 iconAnchor: [12, 41],
                 popupAnchor: [1, -34]
