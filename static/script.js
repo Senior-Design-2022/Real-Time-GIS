@@ -120,6 +120,7 @@ socket.addEventListener('message', e => {
             // });
             markerArrays[cot.uid] = (markersArray, clickedArray);
             layerControl.addOverlay(newMarkerLayer, cot.uid); // add the layer to the layer control as an overlay layer
+            map.removeLayer(marker)
         }
     }
 });
