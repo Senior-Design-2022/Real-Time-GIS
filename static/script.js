@@ -18,7 +18,7 @@ function generate_random_color() {
 var markerArrays = {} // will hold the arrays of each path's markers to manage how many we would like to display at a time
 // attempt at custom icon
 // var leafIcon = L.icon({
-//     iconUrl: 'img/leaf-green.png',
+//     iconUrl: 'img/HOS_AIR.svg.png',
 //     // shadowUrl: './img/leaf-shadow.png',
 
 //     iconSize:     [38, 95], // size of the icon
@@ -58,7 +58,7 @@ socket.addEventListener('message', e => {
             targets.get(cot.uid).addLatLng([cot.lat, cot.lon]); //add point to path
             // var marker = L.circleMarker([cot.lat, cot.lon], {radius: 3, fill: true, fillOpacity: 1.0}).bindPopup(cot.uid); // create marker for that point
             var marker = L.marker([cot.lat, cot.lon], {icon: L.icon({
-                iconUrl: "static/images/leaf-green.png", // icons[cot.type]
+                iconUrl: "static/images/HOS_AIR.svg.png", // icons[cot.type]
                 iconSize: [25, 41],
                 iconAnchor: [12, 41],
                 popupAnchor: [1, -34]
@@ -67,7 +67,7 @@ socket.addEventListener('message', e => {
             markerArrays[cot.uid].push(marker);
             // get the layer group for the markers of this path
             var layerGroup = markerLayers.get(cot.uid);
-            if(markerArrays[cot.uid].length > 5) { // checks if markers array has more than 5 values, if so, remove oldest
+            if(markerArrays[cot.uid].length > 1) { // checks if markers array has more than 5 values, if so, remove oldest
                 var oldestMarker = markerArrays[cot.uid].shift();
                 layerGroup.removeLayer(oldestMarker)
             }
@@ -103,7 +103,7 @@ socket.addEventListener('message', e => {
             // create new marker and layer group
             // var marker = L.circleMarker([cot.lat, cot.lon], {radius: 3, fill: true, fillOpacity: 1.0}).addTo(map).bindPopup(cot.uid); // create marker for the point
             var marker = L.marker([cot.lat, cot.lon], {icon: L.icon({
-                iconUrl: "static/images/leaf-green.png",
+                iconUrl: "static/images/HOS_AIR.svg.png",
                 iconSize: [25, 41],
                 iconAnchor: [12, 41],
                 popupAnchor: [1, -34]
