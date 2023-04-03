@@ -116,12 +116,23 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 // send a request to start recording the input feed
 async function startRecording() {
     //make http request
+    /**
+     * 
+     * TODO: ERROR CHECK HERE IF HTTP REQUEST COMES BACK AS FAILED
+     * i.e. IF IT'S ALREADY RECORDING, CHANGE THE BUTTON TO REFLECT
+     * THAT AND DO NOTHING
+     * 
+     */
+    document.getElementById("start-recording-button").hidden = true;
+    document.getElementById("stop-recording-button").hidden = false;
     fetch(backendUrl + '/recording/start', {method: "GET"});
 }
 
 // send a request to stop recording the input feed
 async function stopRecording() {
     //make http request
+    document.getElementById("stop-recording-button").hidden = true;
+    document.getElementById("start-recording-button").hidden = false;
     fetch(backendUrl + '/recording/stop', {method: "GET"});
 }
 

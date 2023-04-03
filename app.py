@@ -37,26 +37,44 @@ debugLogger = True
 recording = False
 logger = None
 
-
 # render home page
 @app.route('/')
 def serve_leaflet():
    return render_template('index.html')
 
 # start recording input feed
+#
+# TODO: figure out how to send JSON responses back for better error handling on the front end
+#
 @app.route('/recording/start')
 def start_recording():
-   recording = True
-   logger = SaveReplay(debug=debugLogger)
-   return "Started recording input feed"
+   # get global variables
+   global recording
+   global logger
+   global debugLogger
+
+   if recording:
+      return "Error: already recording" # might want to make this an http 400 bad request for better error handling
+   else:
+      # set recording to true 
+      recording = True
+      logger = SaveReplay(debug=debugLogger)
+      return "Started recording input feed"
    
 
 # stop recording input feed
+#
+# TODO: figure out how to send JSON responses back for better error handling on the front end
+#
 @app.route('/recording/stop')
 def stop_recording():
+   # get global variables
+   global recording
+
    # stop the recording and create a new logger -- i.e. a new log file
    recording = False
    return "Stopped recording input feed"
+
 
 # runs a replay based on a file path
 #
@@ -67,11 +85,7 @@ def run_replay():
    path = request.get_json()['path']
    speed = request.get_json()['speed']
       
-   print(path)
-   
-   print("starting replay")
    replay = Replay(path, '127.0.0.1', 1870, float(speed))
-   print("replay started")   
 
    return "success" 
 
