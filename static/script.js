@@ -1,3 +1,6 @@
+// url to make call to backend flask app
+const backendUrl = 'http://' + location.host;
+
 //create map
 var map = L.map('map').setView([40.745152, -74.024345], 13);
 var layerControl = L.control.layers().addTo(map); // add the layer control to the map for hiding markers
@@ -16,17 +19,6 @@ function generate_random_color() {
     return `rgb(${r},${g},${b})`;
 }
 var markerArrays = {} // will hold the arrays of each path's markers to manage how many we would like to display at a time
-// attempt at custom icon
-// var leafIcon = L.icon({
-//     iconUrl: 'img/HOS_AIR.svg.png',
-//     // shadowUrl: './img/leaf-shadow.png',
-
-//     iconSize:     [38, 95], // size of the icon
-//     // shadowSize:   [50, 64], // size of the shadow
-//     iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
-//     // shadowAnchor: [4, 62],  // the same for the shadow
-//     popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
-// });
 
 icons = {
     'a-f-A-C' : 'static/images/FRD_AIR.svg.png',
@@ -56,13 +48,13 @@ socket.addEventListener('message', e => {
         if (targets.has(cot.uid)) { //if this target is already in the map
             //append data to path
             targets.get(cot.uid).addLatLng([cot.lat, cot.lon]); //add point to path
-            // var marker = L.circleMarker([cot.lat, cot.lon], {radius: 3, fill: true, fillOpacity: 1.0}).bindPopup(cot.uid); // create marker for that point
+            // create marker for that point
             var marker = L.marker([cot.lat, cot.lon], {icon: L.icon({
                 iconUrl: "static/images/HOS_AIR.svg.png", // icons[cot.type]
                 iconSize: [25, 41],
                 iconAnchor: [12, 41],
                 popupAnchor: [1, -34]
-            })}).bindPopup(cot.uid).addTo(map); // create marker for that point
+            })}).bindPopup(cot.uid).addTo(map);
             
             markerArrays[cot.uid].push(marker);
             // get the layer group for the markers of this path
@@ -71,11 +63,7 @@ socket.addEventListener('message', e => {
                 var oldestMarker = markerArrays[cot.uid].shift();
                 layerGroup.removeLayer(oldestMarker)
             }
-            // marker.on('click', function(e) {
-            //     markerArrays[cot.uid].clickedArray.push(marker);
-            //     newClickedLayer.addLayer(marker);
-            // });
-            // layerGroup.clearLayers()
+
             layerGroup.addLayer(marker); // add the new marker to the layer group
             path.on('click', function(e) {
                 // Display an alert with the message "You clicked on the path!"
@@ -101,23 +89,18 @@ socket.addEventListener('message', e => {
             targets.get(cot.uid).addLatLng([cot.lat, cot.lon]); //add point
             
             // create new marker and layer group
-            // var marker = L.circleMarker([cot.lat, cot.lon], {radius: 3, fill: true, fillOpacity: 1.0}).addTo(map).bindPopup(cot.uid); // create marker for the point
+            // create marker for the point
             var marker = L.marker([cot.lat, cot.lon], {icon: L.icon({
                 iconUrl: "static/images/HOS_AIR.svg.png",
                 iconSize: [25, 41],
                 iconAnchor: [12, 41],
                 popupAnchor: [1, -34]
-            })}).addTo(map).bindPopup(cot.uid); // create marker for the point
+            })}).addTo(map).bindPopup(cot.uid); 
             var newMarkerLayer = L.layerGroup().addLayer(marker).addTo(map); // create layer group for markers on this line
             markerLayers.set(cot.uid, newMarkerLayer); // add the new layer group to our map
             var markersArray = [];
             var clickedArray = [];
             markersArray.push(marker);
-            // marker.on('click', function(e) {
-            //     clickedArray.push(marker);
-            //     var newClickedLayer = L.layerGroup().addTo(map);
-            //     newClickedLayer.addLayer(marker);
-            // });
             markerArrays[cot.uid] = (markersArray, clickedArray);
             layerControl.addOverlay(newMarkerLayer, cot.uid); // add the layer to the layer control as an overlay layer
         }
@@ -128,3 +111,52 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     }).addTo(map);
+
+
+// send a request to start recording the input feed
+async function startRecording() {
+    //make http request
+    /**
+     * 
+     * TODO: ERROR CHECK HERE IF HTTP REQUEST COMES BACK AS FAILED
+     * i.e. IF IT'S ALREADY RECORDING, CHANGE THE BUTTON TO REFLECT
+     * THAT AND DO NOTHING
+     * 
+     */
+    document.getElementById("start-recording-button").hidden = true;
+    document.getElementById("stop-recording-button").hidden = false;
+    fetch(backendUrl + '/recording/start', {method: "GET"});
+}
+
+// send a request to stop recording the input feed
+async function stopRecording() {
+    //make http request
+    document.getElementById("stop-recording-button").hidden = true;
+    document.getElementById("start-recording-button").hidden = false;
+    fetch(backendUrl + '/recording/stop', {method: "GET"});
+}
+
+// send a request to start a replay
+// this will send JUST name of the file
+async function requestReplay() {
+    filepath = document.getElementById('replay-file').value;
+    speed = document.getElementById('replay-speed').value;
+    console.log(filepath);
+    if (!filepath) return "Error: must select a file"; //make sure they selected something
+
+    filename = filepath.substring(filepath.lastIndexOf("\\") + 1)
+
+    const response = await fetch(backendUrl + '/replay', {
+        method: "POST",
+        body: JSON.stringify({
+            path: filename,
+            speed: speed
+        }),
+        headers: {
+            "Content-type": "application/json; charset=UTF-8",
+            "Accept": "application/json"
+        }
+    });
+    console.log(response);
+    return "Success" // TODO: recieve the json coming back in the response
+}

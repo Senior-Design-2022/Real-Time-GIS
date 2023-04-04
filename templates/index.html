@@ -21,8 +21,38 @@
     <body>
         <h1 class="center">Real Time Geoinformation System</h1>
         <div id="map"></div>
-        
-        <script src="{{url_for('static', filename='script.js')}}"></script>
+
+        <br/><br/>
+        <div class="settings-div">
+            <h3>Recording Options:</h3>
+            <button onclick="startRecording()" id="start-recording-button">Start Recording</button>
+            <button onclick="stopRecording()" id="stop-recording-button" hidden>Stop Recording</button>
+            <br/><br/>
+        </div>
+
+        <br/>
+
+        <div class="settings-div">
+            <h3>Replay Options:</h3>
+            <label for="replay-file">Choose a replay file:</label>
+            <br/>
+            <!-- IF LOG FILE TYPE CHANGES, CHANGE THE "accept" ATTRIBUTE -->
+            <input type="file"
+                id="replay-file" name="replay-file"
+                accept=".log">
+            <br/><br/>
+            <label for="replay-speed">Playback speed:</label>
+            <br/>
+            <select name="playback-speed" id="replay-speed">
+                <option value="2">0.5x</option>
+                <option value="1" selected>1.0x</option>
+                <option value="0.5">2.0x</option>
+            </select>
+            <br/><br/>
+            <button onclick="requestReplay()">Run replay</button>
+
+            <script src="{{url_for('static', filename='script.js')}}"></script>
+        </div>
     </body>
     
 
