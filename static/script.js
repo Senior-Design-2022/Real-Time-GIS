@@ -21,20 +21,20 @@ function generate_random_color() {
 var markerArrays = {} // will hold the arrays of each path's markers to manage how many we would like to display at a time
 
 icons = {
-    'a-f-A-C' : 'static/images/FRD_AIR.svg.png',
-    'a-f-G-C' : 'static/images/FRD_GND.svg.png',
-    'a-f-S-C' : 'static/images/FRD_SEASURFACE.svg.png',
-    'a-f-U-C' : 'static/images/FRD_SUB.svg.png',
-    'a-h-A-C' : 'static/images/HOS_AIR.svg.png',
-    'a-h-G-C' : 'static/images/HOS_GND.svg.png',
-    'a-h-U-C' : 'static/images/HOS_SUB.svg.png',
+    'a-f-A-C' : 'static/images/FRD_AIR.png',
+    'a-f-G-C' : 'static/images/FRD_GND.png',
+    'a-f-S-C' : 'static/images/FRD_SEASURFACE.png',
+    'a-f-U-C' : 'static/images/FRD_SUB.png',
+    'a-h-A-C' : 'static/images/HOS_AIR.png',
+    'a-h-G-C' : 'static/images/HOS_GND.png',
+    'a-h-U-C' : 'static/images/HOS_SUB.png',
     // 'a-h-S-C' : 'static/images/HOS_SEASURFACE.svg.png' dont have hostile sea yet,
-    'a-n-A-C' : 'static/images/NEU_AIR.svg.png',
-    'a-n-G-C' : 'static/images/NEU_GND.svg.png',
-    'a-n-U-C' : 'static/images/NEU.svg.png',
-    'a-u-A-C' : 'static/images/UNK_AIR.svg.png',
-    'a-u-G-C' : 'static/images/UNK_GND.svg.png',
-    'a-u-U-C' : 'static/images/UNK_SUB.svg.png',
+    'a-n-A-C' : 'static/images/NEU_AIR.png',
+    'a-n-G-C' : 'static/images/NEU_GND.png',
+    'a-n-U-C' : 'static/images/NEU.png',
+    'a-u-A-C' : 'static/images/UNK_AIR.png',
+    'a-u-G-C' : 'static/images/UNK_GND.png',
+    'a-u-U-C' : 'static/images/UNK_SUB.png',
 }
 
 //init socket
@@ -50,9 +50,8 @@ socket.addEventListener('message', e => {
             targets.get(cot.uid).addLatLng([cot.lat, cot.lon]); //add point to path
             // create marker for that point
             var marker = L.marker([cot.lat, cot.lon], {icon: L.icon({
-                iconUrl: "static/images/HOS_AIR.svg.png", // icons[cot.type]
-                iconSize: [25, 41],
-                iconAnchor: [12, 41],
+                iconUrl: icons[cot.type],
+                iconAnchor: [18, 41],
                 popupAnchor: [1, -34]
             })}).bindPopup(cot.uid).addTo(map);
             
@@ -91,9 +90,8 @@ socket.addEventListener('message', e => {
             // create new marker and layer group
             // create marker for the point
             var marker = L.marker([cot.lat, cot.lon], {icon: L.icon({
-                iconUrl: "static/images/HOS_AIR.svg.png",
-                iconSize: [25, 41],
-                iconAnchor: [12, 41],
+                iconUrl: icons[cot.type],
+                iconAnchor: [18, 41],
                 popupAnchor: [1, -34]
             })}).addTo(map).bindPopup(cot.uid); 
             var newMarkerLayer = L.layerGroup().addLayer(marker).addTo(map); // create layer group for markers on this line
@@ -103,14 +101,27 @@ socket.addEventListener('message', e => {
             markersArray.push(marker);
             markerArrays[cot.uid] = (markersArray, clickedArray);
             layerControl.addOverlay(newMarkerLayer, cot.uid); // add the layer to the layer control as an overlay layer
+            map.removeLayer(marker)
         }
     }
 });
 
-L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
     maxZoom: 19,
-    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-    }).addTo(map);
+    attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+}).addTo(map);
+
+var imageUrl = 'static/images/NEU_AIR.png';
+var errorOverlayUrl = 'https://cdn-icons-png.flaticon.com/512/110/110686.png';
+var altText = 'Image of Newark, N.J. in 1922. Source: The University of Texas at Austin, UT Libraries Map Collection.';
+var latLngBounds = L.latLngBounds([[40.799311, -74.118464], [40.68202047785919, -74.33]]);
+
+var imageOverlay = L.imageOverlay(imageUrl, latLngBounds, {
+    opacity: 0.5,
+    errorOverlayUrl: errorOverlayUrl,
+    alt: altText,
+    interactive: true
+}).addTo(map);
 
 
 // send a request to start recording the input feed
