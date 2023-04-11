@@ -150,8 +150,8 @@ async function stopRecording() {
 // send a request to start a replay
 // this will send JUST name of the file
 async function requestReplay() {
-    filepath = document.getElementById('replay-file').value;
-    speed = document.getElementById('replay-speed').value;
+    let filepath = document.getElementById('replay-file').value;
+    let speed = document.getElementById('replay-speed').value;
     console.log(filepath);
     if (!filepath) return "Error: must select a file"; //make sure they selected something
 
@@ -170,4 +170,59 @@ async function requestReplay() {
     });
     console.log(response);
     return "Success" // TODO: recieve the json coming back in the response
+}
+
+// Changes the background of the map -- requires internet connection
+async function changeMapBackground() {
+    /*
+        current options are:
+        satellite-day
+        leaflet-default
+        street-light
+        street-dark
+    */
+    let selection = document.getElementById('online-map-selection').value;
+    let mapUrl, properties;
+
+    //can add more maps here
+    //source used: http://leaflet-extras.github.io/leaflet-providers/preview/index.html
+    switch (selection) {
+        case "satellite-day":
+            mapUrl = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}';
+            properties = {
+                attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
+                maxZoom: 19
+            }
+            break;
+        case "leaflet-default":
+            mapUrl = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
+            properties = {
+                maxZoom: 19,
+                attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+            }
+            break;
+        case "street-light":
+            mapUrl = 'https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png';
+            properties = {
+                attribution: '&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors',
+                maxZoom: 19
+            }
+            break;
+        case "street-dark":
+            mapUrl = 'https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png';
+            properties = {
+                attribution: '&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors',
+                maxZoom: 19
+            }
+            break;
+        default:
+            //something went wrong
+            return;
+    }
+
+    console.log(`changing map to ${mapUrl}`);
+
+    L.tileLayer(mapUrl, properties).addTo(map);
+
+    return;
 }
