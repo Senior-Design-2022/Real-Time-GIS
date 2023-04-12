@@ -90,6 +90,20 @@ def run_replay():
    return "success" 
 
 
+# gets the list of filenames from the static overlays folder to populate the dropdown on the frontend
+#
+#
+#
+@app.route('/getoverlays', methods=['GET'])
+def get_overlays():
+   # recreate file path
+      target_directory = os.path.join(os.path.dirname(os.path.abspath(__file__)),"static\\overlays")
+      overlay_list = os.listdir(target_directory)
+      print(overlay_list)
+
+      return jsonify(overlay_list)
+
+
 @sock.route('/feed')
 def feed(sock):
    with open(Path(__file__).parent / "./config/location1/config0.json") as settings:

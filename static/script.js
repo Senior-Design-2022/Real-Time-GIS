@@ -111,19 +111,6 @@ L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/
     attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
 }).addTo(map);
 
-var imageUrl = 'static/images/NEU_AIR.png';
-var errorOverlayUrl = 'https://cdn-icons-png.flaticon.com/512/110/110686.png';
-var altText = 'Image of Newark, N.J. in 1922. Source: The University of Texas at Austin, UT Libraries Map Collection.';
-var latLngBounds = L.latLngBounds([[40.799311, -74.118464], [40.68202047785919, -74.33]]);
-
-var imageOverlay = L.imageOverlay(imageUrl, latLngBounds, {
-    opacity: 0.5,
-    errorOverlayUrl: errorOverlayUrl,
-    alt: altText,
-    interactive: true
-}).addTo(map);
-
-
 // send a request to start recording the input feed
 async function startRecording() {
     //make http request
@@ -225,4 +212,53 @@ async function changeMapBackground() {
     L.tileLayer(mapUrl, properties).addTo(map);
 
     return;
+}
+
+// Gets the filenames of all the overlays in the static/overlays folder
+// and populates the dropdown accordingly
+async function getOverlays() {
+    // get the files from the backend route which gives us a list of filenames
+    // in the overlays folder
+    let files = await fetch(backendUrl + '/getoverlays', {method: "GET"})
+    .then(function parse(response) {
+        return response.json();
+    });
+
+    // get the html dropdown
+    let overlaySelector = document.getElementById('overlay-selection');
+
+    // clear out the dropdown
+    overlaySelector.innerHTML = '';
+
+    // for each of the overlays, add an option to the dropdown
+    files.forEach(
+        file => {
+            var option = document.createElement('option');
+            option.value = file;
+            option.text = file;
+            overlaySelector.appendChild(option);
+        }
+    )
+}
+
+// Gets the current selected overlay from the overlays dropdown
+// and adds that overlay to the map.
+async function addOverlay() {
+    // get the filename of the overlay we want to add
+    let overlay_filename = document.getElementById('overlay-selection').value;
+
+    // Load kml file
+    fetch('static/overlays/' + overlay_filename)
+    .then(res => res.text())
+    .then(kmltext => {
+        // Create new kml overlay
+        const parser = new DOMParser();
+        const kml = parser.parseFromString(kmltext, 'text/xml');
+        const track = new L.KML(kml);
+        map.addLayer(track);
+
+        // Adjust map to show the kml
+        const bounds = track.getBounds();
+        map.fitBounds(bounds);
+    });
 }

@@ -15,6 +15,7 @@
         <link rel="stylesheet" href="{{ url_for('static', filename='leaflet/leaflet.css') }}" />
         <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
         <script src="{{ url_for('static', filename='leaflet/leaflet.js') }}"></script>
+        <script src="{{ url_for('static', filename='leaflet/L.KML.js') }}"></script>
 
     </head>
 
@@ -99,18 +100,19 @@
 
             <div class="settings-div">
                 <h3>Static Overlays</h3>
-
                 <label for="select-overlay">Select overlay:</label>
-                <div class="input-div">
-                    <input type="file"
-                    id="select-overlay" 
-                    name="select-overlay">
-                </div>
-
+                <select id="overlay-selection">
+                    
+                </select>
                 <br/>
-
+                <br/>
                 <button
-                    onclick=""
+                    onclick="getOverlays()"
+                    class="submit-button">
+                    Get Overlays
+                </button>
+                <button
+                    onclick="addOverlay()"
                     class="submit-button">
                     Add to Map
                 </button>
