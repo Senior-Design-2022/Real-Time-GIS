@@ -262,3 +262,16 @@ async function addOverlay() {
         map.fitBounds(bounds);
     });
 }
+
+let selected = "";
+
+function openMenuItem(id) {
+
+    let items = document.getElementsByClassName("menu-options");
+    // hide all elements before showing selection
+    for (let i = 0; i < items.length; i++) {
+        items[i].hidden = true;
+    }
+    if (selected !== id) document.getElementById(id).hidden = false;
+    selected = id;
+}
