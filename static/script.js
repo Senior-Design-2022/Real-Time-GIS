@@ -272,6 +272,11 @@ function openMenuItem(id) {
     for (let i = 0; i < items.length; i++) {
         items[i].hidden = true;
     }
-    if (selected !== id) document.getElementById(id).hidden = false;
-    selected = id;
+
+    if (selected !== id) {
+        document.getElementById(id).hidden = false;
+        selected = id;
+    } else {
+        selected = "";
+    }
 }
