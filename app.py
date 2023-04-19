@@ -104,6 +104,16 @@ def get_overlays():
       return jsonify(overlay_list)
 
 
+@app.route('/gettiles', methods=['GET'])
+def get_tiles():
+   # recreate file path
+      target_directory = os.path.join(os.path.dirname(os.path.abspath(__file__)),"static\\tiles")
+      tiles_list = os.listdir(target_directory)
+      print(tiles_list)
+
+      return jsonify(tiles_list)
+
+
 @sock.route('/feed')
 def feed(sock):
    with open(Path(__file__).parent / "./config/location1/config0.json") as settings:

@@ -1,5 +1,5 @@
 #map {
-    height: 95vh;
+    height: 94vh;
     margin: auto;
 }
 
@@ -15,35 +15,14 @@ body {
     font-family: Arial, Helvetica, sans-serif;
 }
 
-.settings-div {
-    padding-top: -10px;
-    margin: 5px;
-    padding: 5px;
-    background-color: #EDEDED;
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-    text-align: center;
-    
-    width: 250px;
-}
-
-.flex-container {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: center;
-}
-
-.input-div {
+.input-field {
     background-color: white;
-    border-style: solid;
-    border-radius: 2px;
     border-width: 1px;
-    padding: 5px;
-    margin-top: 2px;
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: center;
+    border-color: black;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 4px;
+    margin-right: 5px;
 }
 
 #start-recording-button {
@@ -89,10 +68,6 @@ body {
     color: black;
 }
 
-.note {
-    font-size: 12px;
-}
-
 .menu-buttons {
     transition-duration: 0.4s;
     background-color: #686b6d;
@@ -108,36 +83,21 @@ body {
     color: black;
 }
 
-
-
-
-
-
-
-
-
-
-/* Style the button that is used to open and close the collapsible content */
-.collapsible {
-    background-color: #eee;
-    color: #444;
-    cursor: pointer;
-    padding: 18px;
-    border: none;
-    text-align: left;
-    outline: none;
-    font-size: 15px;
+.wrapper {
+    height: 4vh;
 }
-  
-  /* Add a background color to the button if it is clicked on (add the .active class with JS), and when you move the mouse over it (hover) */
-.active, .collapsible:hover {
-    background-color: #ccc;
+
+#close-menu-button {
+    transition-duration: 0.4s;
+    background-color: #c44433;
+    border: 2px solid #c44433;
+    color: white;
+    border-radius: 50%;
+    padding: 10px 13px;
 }
-  
-  /* Style the collapsible content. Note: hidden by default */
-.content {
-    padding: 0 18px;
-    display: none;
-    overflow: hidden;
-    background-color: #f1f1f1;
+
+
+#close-menu-button:hover {
+    background-color: white; 
+    color: black;
 }

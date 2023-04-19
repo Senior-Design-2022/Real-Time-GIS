@@ -106,7 +106,7 @@ socket.addEventListener('message', e => {
     }
 });
 
-L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+let current = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
     maxZoom: 19,
     attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
 }).addTo(map);
@@ -159,6 +159,7 @@ async function requestReplay() {
     return "Success" // TODO: recieve the json coming back in the response
 }
 
+
 // Changes the background of the map -- requires internet connection
 async function changeMapBackground() {
     /*
@@ -209,10 +210,62 @@ async function changeMapBackground() {
 
     console.log(`changing map to ${mapUrl}`);
 
-    L.tileLayer(mapUrl, properties).addTo(map);
+    let old = current;
+    current = L.tileLayer(mapUrl, properties).addTo(map);
+    map.removeLayer(old);
 
     return;
 }
+
+
+//gets all tile directories
+async function getTiles() {
+    let files = await fetch(backendUrl + '/gettiles', {method: "GET"})
+    .then(function parse(response) {
+        return response.json();
+    });
+
+    let tileSelection = document.getElementById('tile-selection');
+
+    tileSelection.innerHTML = '';
+
+    files.forEach(
+        file => {
+            let option = document.createElement('option');
+            option.value = file;
+            option.text = file;
+            tileSelection.appendChild(option);
+        }
+    )
+}
+
+
+//sets the map to the selected set of tiles
+async function setOfflineMap() {
+
+    let filepath = document.getElementById('tile-selection').value;
+    console.log(filepath);
+    if (!filepath) return "Error: must select a directory"; //make sure they selected something
+
+    filename = filepath.substring(filepath.lastIndexOf("\\") + 1)
+
+    mapUrl = `/static/tiles/${filename}/{z}/{x}/{y}.jpg`;
+    properties = {
+        attribution: "A. Sedunov",
+        maxZoom: 19,
+        errorTileUrl: "/static/images/notfound.png"
+    }
+
+    console.log(mapUrl);
+
+    let old = current;
+    current = L.tileLayer(mapUrl, properties).addTo(map);
+    map.removeLayer(old);
+
+    return;
+}
+
+
 
 // Gets the filenames of all the overlays in the static/overlays folder
 // and populates the dropdown accordingly
@@ -267,16 +320,34 @@ let selected = "";
 
 function openMenuItem(id) {
 
-    let items = document.getElementsByClassName("menu-options");
-    // hide all elements before showing selection
-    for (let i = 0; i < items.length; i++) {
-        items[i].hidden = true;
+    let menuItems = document.getElementsByClassName("menu-options");
+    // hide all menus
+    for (let i = 0; i < menuItems.length; i++) {
+        menuItems[i].hidden = true;
     }
 
-    if (selected !== id) {
-        document.getElementById(id).hidden = false;
-        selected = id;
-    } else {
-        selected = "";
+    //hide all buttons
+    let menuButtons = document.getElementsByClassName("menu-buttons");
+    for (let i = 0; i < menuButtons.length; i++) {
+        menuButtons[i].hidden = true;
     }
+
+    //show the element and close button
+    document.getElementById(id).hidden = false;
+    document.getElementById('close-menu-button').hidden = false;
+}
+
+function closeMenu() {
+    let menuItems = document.getElementsByClassName("menu-options");
+    // hide all menus
+    for (let i = 0; i < menuItems.length; i++) {
+        menuItems[i].hidden = true;
+    }
+    //hide all buttons
+    let menuButtons = document.getElementsByClassName("menu-buttons");
+    for (let i = 0; i < menuButtons.length; i++) {
+        menuButtons[i].hidden = false;
+    }
+
+    document.getElementById('close-menu-button').hidden = true;
 }

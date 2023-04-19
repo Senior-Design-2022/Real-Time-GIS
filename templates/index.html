@@ -21,260 +21,117 @@
 
     <body>
 
-        <button 
-            onclick="startRecording()" 
-            id="start-recording-button"
-            class="button-style">
-            Start Recording</button>
-        
-        <button 
-            onclick="stopRecording()" 
-            id="stop-recording-button" 
-            class="button-style"
-            hidden>
-            Stop Recording</button>
+        <div class="wrapper">
+            <button 
+                onclick="startRecording()" 
+                id="start-recording-button"
+                class="button-style">
+                Start Recording</button>
+            
+            <button 
+                onclick="stopRecording()" 
+                id="stop-recording-button" 
+                class="button-style"
+                hidden>
+                Stop Recording</button>
 
-        <button 
-            id="replay-button"
-            onclick="openMenuItem('replay-div')"
-            class="menu-buttons">
-            Replays</button>
+            <button 
+                id="replay-button"
+                onclick="openMenuItem('replay-div')"
+                class="menu-buttons">
+                Replays</button>
 
-        <button
-            id="online-maps-button" 
-            onclick="openMenuItem('online-maps-div')"
-            class="menu-buttons">
-            Online Maps</button>
+            <button
+                id="online-maps-button" 
+                onclick="openMenuItem('online-maps-div')"
+                class="menu-buttons">
+                Online Maps</button>
 
-        <button
-            id="overlays-button"
-            onclick="openMenuItem('overlays-div')"
-            class="menu-buttons">
-            Overlays</button>
+            <button
+                id="overlays-button"
+                onclick="openMenuItem('overlays-div')"
+                class="menu-buttons">
+                Overlays</button>
 
-        <button
-            id="offline-tiles-button" 
-            onclick="openMenuItem('offline-tiles-div')"
-            class="menu-buttons">
-            Offline Tiles</button>
+            <button
+                id="offline-tiles-button" 
+                onclick="openMenuItem('offline-tiles-div')"
+                class="menu-buttons">
+                Offline Tiles</button>
 
+            <span class="menu-options" id="replay-div" hidden>
+                    <span>
+                        <input type="file"
+                        id="replay-file" 
+                        name="replay-file"
+                        class="input-field"
+                        accept=".log">
+                    </span>
+                    
+                    <span>
+                        <label for="replay-speed">Playback speed:</label>
+                        <select name="playback-speed" id="replay-speed" class="input-field">
+                            <option value="2">0.5x</option>
+                            <option value="1" selected>1.0x</option>
+                            <option value="0.5">2.0x</option>
+                        </select>
+                    </span>
+                    
+                    <button 
+                        onclick="requestReplay()"
+                        class="submit-button">Run replay</button>
+            </span>
 
-        <div class="menu-options" id="replay-div" hidden>
-            <div class="settings-div">
-                <h3>Replay Options</h3>
-                <label for="replay-file">Choose a replay file:</label>
-                <br/>
-                
-                <div class="input-div">
-                    <input type="file"
-                    id="replay-file" 
-                    name="replay-file"
-                    accept=".log">
-                </div>
-                <p class="note">
-                    Note: replay files must be located in the project's directory under /Logger/replays
-                </p>
-                <label for="replay-speed">Playback speed:</label>
-                <br/>
-                <select name="playback-speed" id="replay-speed">
-                    <option value="2">0.5x</option>
-                    <option value="1" selected>1.0x</option>
-                    <option value="0.5">2.0x</option>
-                </select>
-                <br/><br/>
-                <button 
-                    onclick="requestReplay()"
-                    class="submit-button">Run replay</button>
-                <br/>
-            </div>
-        </div>
-
-        <div class="menu-options" id="online-maps-div" hidden>
-            <div class="settings-div">
-                <h3>Map Selection (Online)</h3>
-                <select id="online-map-selection">
+            <span class="menu-options" id="online-maps-div" hidden>
+                <select id="online-map-selection" class="input-field">
                     <option value="satellite-day">Satellite</option>
                     <option value="leaflet-default">Leaflet Default</option>
                     <option value="street-light">Street (Light)</option>
                     <option value="street-dark">Street (Dark)</option>
                 </select>
 
-                <br/><br/>
-
                 <button
                     onclick="changeMapBackground()"
                     class="submit-button">
                     Change Map
                 </button>
-            </div>
-        </div>
+            </span>
 
-        <div class="menu-options" id="overlays-div" hidden>
-            <div class="settings-div">
-                <h3>Static Overlays</h3>
+            <span class="menu-options" id="overlays-div" hidden>
                 <label for="select-overlay">Select overlay:</label>
-                <select id="overlay-selection">
-                    
-                </select>
-                <br/>
-                <br/>
+                    <select id="overlay-selection" class="input-field"></select>
+                    <button
+                        onclick="getOverlays()"
+                        class="submit-button">
+                        Get Overlays
+                    </button>
+                    <button
+                        onclick="addOverlay()"
+                        class="submit-button">
+                        Add to Map
+                    </button>
+            </span>
+
+            <span class="menu-options" id="offline-tiles-div" hidden>
+                <select id="tile-selection" class="input-field"></select>
                 <button
-                    onclick="getOverlays()"
+                    onclick="getTiles()"
                     class="submit-button">
-                    Get Overlays
+                    Get Tiles
                 </button>
                 <button
-                    onclick="addOverlay()"
-                    class="submit-button">
-                    Add to Map
-                </button>
-            </div>
-        </div>
-
-        <div class="menu-options" id="offline-tiles-div" hidden>
-            <div class="settings-div">
-                <h3>Offline Tile Import</h3>
-
-                <label for="tile-directory">Select tiles:</label>
-                <div class="input-div">
-                    <input type="file"
-                    id="tile-directory" 
-                    name="tile-input">
-                </div>
-
-                <br/>
-
-                <button
-                    onclick=""
+                    onclick="setOfflineMap()"
                     class="submit-button">
                     Change Map
                 </button>
-            </div>
+            </span>
+
+            <button id="close-menu-button" onclick="closeMenu()" hidden>&#10005;</button>
+
         </div>
-
-
-    
-        <!--<button onclick="openNav()">&#9776;</button>-->
-        
 
         <div id="map"></div>
 
-        <!--   
-        <div class="flex-container">
-
-            <div class="settings-div">
-                <h3>Recording Options</h3>
-                <button 
-                    onclick="startRecording()" 
-                    id="start-recording-button"
-                    class="button-style">
-                Start Recording
-                </button>
-                <button 
-                    onclick="stopRecording()" 
-                    id="stop-recording-button" 
-                    class="button-style"
-                    hidden>
-                    Stop Recording
-                </button>
-                <br/>
-                <p class="note">
-                    Note: log files will be saved in the project's directory under /Logger/replays
-                </p>
-            </div>
-
-            <br/>
-
-            <div class="settings-div">
-                <h3>Replay Options</h3>
-                <label for="replay-file">Choose a replay file:</label>
-                <br/>
-                
-                <div class="input-div">
-                    <input type="file"
-                    id="replay-file" 
-                    name="replay-file"
-                    accept=".log">
-                </div>
-                <p class="note">
-                    Note: replay files must be located in the project's directory under /Logger/replays
-                </p>
-                <label for="replay-speed">Playback speed:</label>
-                <br/>
-                <select name="playback-speed" id="replay-speed">
-                    <option value="2">0.5x</option>
-                    <option value="1" selected>1.0x</option>
-                    <option value="0.5">2.0x</option>
-                </select>
-                <br/><br/>
-                <button 
-                    onclick="requestReplay()"
-                    class="submit-button">Run replay</button>
-                <br/>
-
-
-            </div>
-
-            <div class="settings-div">
-                <h3>Map Selection (Online)</h3>
-                <select id="online-map-selection">
-                    <option value="satellite-day">Satellite</option>
-                    <option value="leaflet-default">Leaflet Default</option>
-                    <option value="street-light">Street (Light)</option>
-                    <option value="street-dark">Street (Dark)</option>
-                </select>
-
-                <br/><br/>
-
-                <button
-                    onclick="changeMapBackground()"
-                    class="submit-button">
-                    Change Map
-                </button>
-            </div>
-
-            <div class="settings-div">
-                <h3>Static Overlays</h3>
-                <label for="select-overlay">Select overlay:</label>
-                <select id="overlay-selection">
-                    
-                </select>
-                <br/>
-                <br/>
-                <button
-                    onclick="getOverlays()"
-                    class="submit-button">
-                    Get Overlays
-                </button>
-                <button
-                    onclick="addOverlay()"
-                    class="submit-button">
-                    Add to Map
-                </button>
-            </div>
-
-            <div class="settings-div">
-                <h3>Offline Tile Import</h3>
-
-                <label for="tile-directory">Select tiles:</label>
-                <div class="input-div">
-                    <input type="file"
-                    id="tile-directory" 
-                    name="tile-input">
-                </div>
-
-                <br/>
-
-                <button
-                    onclick=""
-                    class="submit-button">
-                    Change Map
-                </button>
-            </div>
-
-            
-        </div>
-        -->
         <script src="{{url_for('static', filename='script.js')}}"></script>
     </body>
     
