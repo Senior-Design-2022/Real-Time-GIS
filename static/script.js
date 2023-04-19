@@ -8,8 +8,8 @@ var layerControl = L.control.layers().addTo(map); // add the layer control to th
 //create map for tracking multiple targets
 const targets = new Map();
 const markerLayers = new Map(); // keeps track of the layers added for each path
-
 const showMarkers = true; //just in case they get overwhelming, can stop markers from being added
+const overlayLayers = new Map(); // keeps track of overlays being displayed on the map
 
 // generates a random color for each new path
 function generate_random_color() {
@@ -231,10 +231,12 @@ async function getTiles() {
 
     files.forEach(
         file => {
-            let option = document.createElement('option');
-            option.value = file;
-            option.text = file;
-            tileSelection.appendChild(option);
+            if (file != '.gitignore') {
+                let option = document.createElement('option');
+                option.value = file;
+                option.text = file;
+                tileSelection.appendChild(option);
+            }
         }
     )
 }
@@ -308,12 +310,30 @@ async function addOverlay() {
         const parser = new DOMParser();
         const kml = parser.parseFromString(kmltext, 'text/xml');
         const track = new L.KML(kml);
+        overlayLayers.set(overlay_filename, track)
         map.addLayer(track);
-
+        
         // Adjust map to show the kml
         const bounds = track.getBounds();
         map.fitBounds(bounds);
     });
+}
+
+// Removes the selected overlay from the map
+function removeOverlay() {
+    // get the filename of the overlay we want to add
+    let overlay_filename = document.getElementById('overlay-selection').value;
+
+    if(overlayLayers.has(overlay_filename)) {
+        // get the track that needs to be removed
+        const track = overlayLayers.get(overlay_filename);
+
+        // remove the overlay from the map
+        map.removeLayer(track);
+
+        // remove the track object from the dictionary
+        overlayLayers.delete(overlay_filename);
+    }
 }
 
 let selected = "";

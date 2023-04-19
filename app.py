@@ -96,22 +96,23 @@ def run_replay():
 #
 @app.route('/getoverlays', methods=['GET'])
 def get_overlays():
-   # recreate file path
-      target_directory = os.path.join(os.path.dirname(os.path.abspath(__file__)),"static\\overlays")
-      overlay_list = os.listdir(target_directory)
-      print(overlay_list)
-
-      return jsonify(overlay_list)
+   # get all files in the overlays directory
+   target_directory = os.path.join(os.path.dirname(os.path.abspath(__file__)),"static\\overlays")
+   overlay_list = os.listdir(target_directory)
+   
+   # send the list of files in json format to the frontend
+   return jsonify(overlay_list)
 
 
 @app.route('/gettiles', methods=['GET'])
 def get_tiles():
-   # recreate file path
-      target_directory = os.path.join(os.path.dirname(os.path.abspath(__file__)),"static\\tiles")
-      tiles_list = os.listdir(target_directory)
-      print(tiles_list)
+   # get all tiles
+   target_directory = os.path.join(os.path.dirname(os.path.abspath(__file__)),"static\\tiles")
+   tiles_list = os.listdir(target_directory)
+   print(tiles_list)
 
-      return jsonify(tiles_list)
+   # return list of tiles
+   return jsonify(tiles_list)
 
 
 @sock.route('/feed')
