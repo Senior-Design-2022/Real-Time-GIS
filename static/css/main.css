@@ -1,6 +1,10 @@
 #map {
-    height: 94vh;
+    height: 92vh;
     margin: auto;
+}
+
+.wrapper {
+    height: 6vh;
 }
 
 .center {
@@ -81,10 +85,6 @@ body {
 .menu-buttons:hover {
     background-color: white; 
     color: black;
-}
-
-.wrapper {
-    height: 4vh;
 }
 
 #close-menu-button {
