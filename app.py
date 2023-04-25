@@ -10,6 +10,7 @@ from pathlib import Path
 import json
 import xml.etree.ElementTree as ET
 import os.path
+import sys
 
 from CoTUtils.CoTUtility import CoTUtility
 from SocketUtils.SocketUtils import SITQueuedUDPClient
@@ -31,6 +32,10 @@ class bcolors:
 # initialize flask application
 app = Flask(__name__, static_folder='static')
 sock = Sock(app)
+
+# default ip and port
+host_ip = '127.0.0.1'
+host_port = 3000
 
 # initialize logger for saving replays
 debugLogger = True
@@ -85,7 +90,7 @@ def run_replay():
    path = request.get_json()['path']
    speed = request.get_json()['speed']
       
-   replay = Replay(path, '127.0.0.1', 1870, float(speed))
+   replay = Replay(path, host_ip, host_port, float(speed))
 
    return "success" 
 
@@ -119,7 +124,7 @@ def get_tiles():
 def feed(sock):
    with open(Path(__file__).parent / "./config/location1/config0.json") as settings:
       wanted_params = json.load(settings)
-      with SITQueuedUDPClient('127.0.0.1',1870) as scot:
+      with SITQueuedUDPClient(host_ip,host_port) as scot:
          while(1):
             if scot.available():
                item, good = scot.getitem()
@@ -145,4 +150,13 @@ def feed(sock):
                   
 
 if __name__ == '__main__':
-   app.run(host='localhost', port='3000', debug=False)
+
+   #check command line args
+   if len(sys.argv) != 3 or not sys.argv[2].isdigit():
+      print(f'{bcolors.FAIL}Usage: python app.py <ip_addr> <port>')
+
+   # get command line arguments
+   host_ip = sys.argv[1]           #"127.0.0.1"
+   host_port = int(sys.argv[2])    # 3000
+
+   app.run(host=host_ip, port=host_port, debug=False)
